@@ -1,56 +1,55 @@
-# Welcome to your Expo app 👋
+# NFIL3D App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The official NFIL3D app for Android, iOS and the web, built from one Expo (React Native) codebase.
 
-## Get started
+- **Shop**: the live nfil3d.com catalog (WooCommerce Store API), GST-inclusive prices, cart and checkout on nfil3d.com
+- **Models**: free 3D model collections curated by NFIL3D, uploads with review
+- **My printer**: pair a Mini-N, N1 or N2 and queue prints
+- **Learn**: guides and a weekly quiz with prizes
+- **Profile**: orders, addresses, rewards, account deletion
 
-1. Install dependencies
+Brand: NFIL3D Brand Guidelines v1.2 (light mustard `#F5CB7B`, commerce orange `#FF8A00` for buy actions, Inter Tight 900 + Inter).
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Run locally
 
 ```bash
-npm run reset-project
+npm install
+npm run sync        # refresh the bundled product snapshot from nfil3d.com
+npm run web         # web in the browser
+npm start           # scan the QR code with Expo Go on your phone
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+## Deploy the web app to Cloudflare Pages
 
-### Other setup steps
+In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick this repo, then:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+| Setting | Value |
+|---|---|
+| Framework preset | None |
+| Build command | `npm run build:web` |
+| Build output directory | `dist` |
+| Environment variable | `NODE_VERSION` = `22` |
 
-## Learn more
+Every push to `main` deploys automatically, and pull requests get preview URLs.
 
-To learn more about developing your project with Expo, look at the following resources:
+`functions/api/products.js` runs as a Pages Function at `/api/products`. It proxies the nfil3d.com Store API, which browsers can't call directly because of CORS, and caches the result for 10 minutes. `public/_redirects` makes deep links like `/product/3180` work.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Publish to the App Store and Google Play
 
-## Join the community
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest build --platform all --profile production
+npx eas-cli@latest submit --platform all
+```
 
-Join our community of developers creating universal apps.
+Builds run in Expo's cloud, so you don't need a Mac. You need an Apple Developer account and a Google Play Console account, preferably registered to the NFIL3D company (this needs a D-U-N-S number).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Multi-item checkout
+
+A single product checks out with standard WooCommerce. To hand over a whole cart, install `wordpress/nfil3d-app-cart.php` on nfil3d.com (in `wp-content/mu-plugins/`).
+
+## What's next
+
+- Real Google, Apple and phone OTP sign-in (Firebase Auth). The UI is complete, and this build creates a local profile.
+- Community uploads storage and moderation (Supabase).
+- Printer Wi-Fi pairing, once the Mini-N, N1 and N2 connectivity is confirmed.

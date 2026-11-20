@@ -1,0 +1,29 @@
+import Feather from '@expo/vector-icons/Feather';
+import { Tabs } from 'expo-router';
+import type { ColorValue } from 'react-native';
+
+import { C, F } from '@/lib/theme';
+
+const icon = (name: keyof typeof Feather.glyphMap) =>
+  function TabIcon({ color }: { color: ColorValue }) {
+    return <Feather name={name} size={23} color={color as string} />;
+  };
+
+export default function TabLayout() {
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: C.black,
+        tabBarInactiveTintColor: '#8A8178',
+        tabBarLabelStyle: { fontFamily: F.label, fontSize: 11 },
+        tabBarStyle: { backgroundColor: C.white, borderTopColor: C.divider },
+      }}>
+      <Tabs.Screen name="home" options={{ title: 'Home', tabBarIcon: icon('home') }} />
+      <Tabs.Screen name="shop" options={{ title: 'Shop', tabBarIcon: icon('shopping-bag') }} />
+      <Tabs.Screen name="models" options={{ title: 'Models', tabBarIcon: icon('box') }} />
+      <Tabs.Screen name="learn" options={{ title: 'Learn', tabBarIcon: icon('book-open') }} />
+      <Tabs.Screen name="profile" options={{ title: 'Profile', tabBarIcon: icon('user') }} />
+    </Tabs>
+  );
+}
