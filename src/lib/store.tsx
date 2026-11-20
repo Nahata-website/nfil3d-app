@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
-export type User = { name: string; contact: string; method: 'phone' | 'google' | 'apple' | 'email' } | null;
+import { authReady, signOutEverywhere, watchAuth } from '@/lib/auth';
+
+export type User = { name: string; contact: string; method: 'google' | 'apple' } | null;
 export type CartItem = { id: number; qty: number };
 export type Upload = { id: string; title: string; notes: string; createdAt: string };
 
@@ -51,8 +53,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     AsyncStorage.getItem(KEY)
-      .then((raw) => setS((prev) => ({ ...prev, ...(raw ? JSON.parse(raw) : {}), ready: true })))
+      .then((raw) => {
+        const saved = raw ? JSON.parse(raw) : {};
+        if (authReady) delete saved.user; // restored from Firebase instead
+        else if (saved.user && !['google', 'apple'].includes(saved.user.method)) saved.user = null; // old test-login profiles
+        setS((prev) => ({ ...prev, ...saved, ready: true }));
+      })
       .catch(() => setS((prev) => ({ ...prev, ready: true })));
+  }, []);
+
+  // Firebase is the source of truth for who is signed in.
+  useEffect(() => {
+    if (!authReady) return;
+    return watchAuth((u) => setS((p) => ({ ...p, user: u, onboarded: p.onboarded || !!u })));
   }, []);
 
   useEffect(() => {
@@ -65,7 +78,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => ({
       ...s,
       finishOnboarding: (user) => setS((p) => ({ ...p, onboarded: true, user })),
-      signOut: () => setS((p) => ({ ...p, user: null })),
+      signOut: () => {
+        signOutEverywhere();
+        setS((p) => ({ ...p, user: null }));
+      },
       addToCart: (id, qty = 1) =>
         setS((p) => {
           const found = p.cart.find((c) => c.id === id);
