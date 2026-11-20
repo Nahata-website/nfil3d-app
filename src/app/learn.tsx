@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { Body, H1, H2, Label, Muted, Screen } from '@/components/ui';
+import { BackHeader, Body, H1, H2, Label, Muted, Screen } from '@/components/ui';
 import { useCatalog } from '@/lib/catalog';
 import { GUIDES } from '@/lib/content';
 import { C, F, R } from '@/lib/theme';
@@ -15,10 +15,11 @@ export default function Learn() {
 
   return (
     <Screen>
-      <H1>Learn</H1>
+      <BackHeader />
+      <H1>Learning</H1>
       <Pressable accessibilityRole="button" onPress={() => router.push('/quiz')} style={{ backgroundColor: C.mustard, borderRadius: R.lg, padding: 20, gap: 6 }}>
         <Label>This week’s quiz</Label>
-        <Text style={{ fontFamily: F.display, fontSize: 26, lineHeight: 30 }}>Filament basics</Text>
+        <Text style={{ fontFamily: F.display, fontSize: 24, lineHeight: 28 }}>Filament basics</Text>
         <Body>Top scorers win nfil3d.com coupons or products.</Body>
         <View style={{ alignSelf: 'flex-start', marginTop: 8, backgroundColor: C.black, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 }}>
           <Text style={{ fontFamily: F.label, fontSize: 14, color: C.white }}>Start quiz</Text>

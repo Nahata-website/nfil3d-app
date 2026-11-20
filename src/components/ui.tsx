@@ -134,6 +134,10 @@ export function Card({ children, style, bg = C.cream }: { children: ReactNode; s
   return <View style={[{ backgroundColor: bg, borderRadius: R.lg, padding: 18 }, style]}>{children}</View>;
 }
 
+export function Group({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  return <View style={[{ backgroundColor: C.cream, borderRadius: R.lg, overflow: 'hidden' }, style]}>{children}</View>;
+}
+
 export function Row({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return <View style={[{ flexDirection: 'row', alignItems: 'center' }, style]}>{children}</View>;
 }
@@ -151,22 +155,22 @@ export function ListRow({ label, hint, onPress, icon, danger }: { label: string;
 
 export const s = StyleSheet.create({
   column: { width: '100%', maxWidth: MAX_W },
-  padded: { paddingHorizontal: 20, gap: 20, paddingTop: 12 },
-  display: { fontFamily: F.display, fontSize: 40, lineHeight: 42, color: C.black, letterSpacing: -0.8 },
-  h1: { fontFamily: F.heading, fontSize: 30, lineHeight: 36, color: C.black, letterSpacing: -0.4 },
-  h2: { fontFamily: F.heading, fontSize: 20, lineHeight: 26, color: C.black },
-  body: { fontFamily: F.body, fontSize: 16, lineHeight: 24, color: C.black },
-  muted: { fontFamily: F.body, fontSize: 14, lineHeight: 20, color: C.muted },
-  label: { fontFamily: F.label, fontSize: 12, letterSpacing: 0.6, color: C.black, textTransform: 'uppercase' },
-  btn: { height: 54, borderRadius: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingHorizontal: 18 },
-  btnText: { fontFamily: F.label, fontSize: 16 },
+  padded: { paddingHorizontal: 16, gap: 18, paddingTop: 10 },
+  display: { fontFamily: F.display, fontSize: 32, lineHeight: 35, color: C.black, letterSpacing: -0.7 },
+  h1: { fontFamily: F.heading, fontSize: 24, lineHeight: 30, color: C.black, letterSpacing: -0.35 },
+  h2: { fontFamily: F.label, fontSize: 17, lineHeight: 22, color: C.black, letterSpacing: -0.2 },
+  body: { fontFamily: F.body, fontSize: 15, lineHeight: 21, color: C.black },
+  muted: { fontFamily: F.body, fontSize: 13, lineHeight: 18, color: C.muted, letterSpacing: 0.1 },
+  label: { fontFamily: F.label, fontSize: 11, letterSpacing: 0.7, color: C.black, textTransform: 'uppercase' },
+  btn: { height: 50, borderRadius: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingHorizontal: 18 },
+  btnText: { fontFamily: F.label, fontSize: 15 },
   iconBtn: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   badge: { position: 'absolute', top: 2, right: 2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: C.orange, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
   badgeText: { fontFamily: F.heading, fontSize: 11, color: C.black },
   backHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  chip: { height: 40, paddingHorizontal: 16, borderRadius: 20, justifyContent: 'center' },
-  chipText: { fontFamily: F.label, fontSize: 14 },
-  listRow: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 14, borderBottomWidth: 1, borderBottomColor: C.divider },
-  listLabel: { flex: 1, fontFamily: F.label, fontSize: 15, color: C.black },
+  chip: { height: 34, paddingHorizontal: 14, borderRadius: 17, justifyContent: 'center' },
+  chipText: { fontFamily: F.label, fontSize: 13 },
+  listRow: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
+  listLabel: { flex: 1, fontFamily: F.body, fontSize: 15, color: C.black },
   listHint: { fontFamily: F.body, fontSize: 13, color: C.muted },
 });

@@ -22,7 +22,7 @@ export default function Home() {
   const paired = NFIL_PRINTERS.find((p) => p.key === printer);
 
   const actions: { icon: keyof typeof Feather.glyphMap; label: string; go: string }[] = [
-    { icon: 'printer', label: paired ? paired.name : 'My printer', go: '/printer' },
+    { icon: 'printer', label: paired ? paired.name : 'My printer', go: '/devices' },
     { icon: 'book-open', label: 'Guides', go: '/learn' },
     { icon: 'award', label: 'Quiz', go: '/quiz' },
     { icon: 'upload', label: 'Upload', go: '/upload' },
@@ -40,13 +40,13 @@ export default function Home() {
 
       <View style={{ gap: 4 }}>
         <Muted>{user ? `Hi, ${user.name.split(' ')[0]}` : 'Welcome to NFIL3D'}</Muted>
-        <Display style={{ fontSize: 34, lineHeight: 38 }}>What will you make today?</Display>
+        <Display style={{ fontSize: 28, lineHeight: 31 }}>What will you make today?</Display>
       </View>
 
       {n2 ? (
         <Pressable accessibilityRole="link" onPress={() => router.push(`/product/${n2.id}`)} style={{ backgroundColor: C.mustard, borderRadius: R.xl, padding: 22, paddingBottom: 0, overflow: 'hidden' }}>
           <Label>N2 3D printer</Label>
-          <Text style={{ fontFamily: F.display, fontSize: 30, lineHeight: 33, marginTop: 6, color: C.black }}>Print up to{'\n'}250 × 250 × 300 mm</Text>
+          <Text style={{ fontFamily: F.display, fontSize: 26, lineHeight: 29, marginTop: 6, color: C.black }}>Print up to{'\n'}250 × 250 × 300 mm</Text>
           <Body style={{ marginTop: 6 }}>
             {inr(n2.price)} <Text style={{ fontSize: 12 }}>incl. GST</Text>
           </Body>
@@ -74,7 +74,7 @@ export default function Home() {
       <Pressable accessibilityRole="button" onPress={() => router.push('/quiz')} style={{ backgroundColor: C.mustard, borderRadius: R.lg, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ flex: 1, gap: 4 }}>
           <Label>Weekly quiz</Label>
-          <Text style={{ fontFamily: F.heading, fontSize: 18, lineHeight: 24, color: C.black }}>Answer 5 questions. Win coupons and products from nfil3d.com.</Text>
+          <Text style={{ fontFamily: F.heading, fontSize: 16, lineHeight: 22, color: C.black }}>Answer 5 questions. Win coupons and products from nfil3d.com.</Text>
         </View>
         <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.black, alignItems: 'center', justifyContent: 'center' }}>
           <Feather name="arrow-right" size={20} color={C.mustard} />
