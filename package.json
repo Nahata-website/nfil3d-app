@@ -41,7 +41,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "sync": "node scripts/sync-products.mjs",
-    "build:web": "node scripts/sync-products.mjs && expo export -p web",
+    "build:web": "node scripts/sync-products.mjs && expo export -p web && node scripts/fix-pages-assets.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint"
   },

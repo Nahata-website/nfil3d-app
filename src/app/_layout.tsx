@@ -15,14 +15,17 @@ import { C } from '@/lib/theme';
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_600SemiBold, Inter_700Bold, InterTight_900Black });
+  const [fontsLoaded, fontError] = useFonts({ Inter_400Regular, Inter_600SemiBold, Inter_700Bold, InterTight_900Black });
   const [introDone, setIntroDone] = useState(false);
 
-  useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
-  }, [fontsLoaded]);
+  // Never block the app on fonts: fall back to system fonts if they fail to load.
+  const ready = fontsLoaded || !!fontError;
 
-  if (!fontsLoaded) return <View style={{ flex: 1, backgroundColor: '#000' }} />;
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync().catch(() => {});
+  }, [ready]);
+
+  if (!ready) return <View style={{ flex: 1, backgroundColor: '#000' }} />;
 
   return (
     <SafeAreaProvider>
