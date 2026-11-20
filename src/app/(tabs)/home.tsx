@@ -71,13 +71,13 @@ export default function Home() {
         ))}
       </View>
 
-      <Pressable accessibilityRole="button" onPress={() => router.push('/quiz')} style={{ backgroundColor: C.black, borderRadius: R.lg, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+      <Pressable accessibilityRole="button" onPress={() => router.push('/quiz')} style={{ backgroundColor: C.mustard, borderRadius: R.lg, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ flex: 1, gap: 4 }}>
-          <Label style={{ color: C.mustard }}>Weekly quiz</Label>
-          <Text style={{ fontFamily: F.heading, fontSize: 18, lineHeight: 24, color: C.white }}>Answer 5 questions. Win coupons and products from nfil3d.com.</Text>
+          <Label>Weekly quiz</Label>
+          <Text style={{ fontFamily: F.heading, fontSize: 18, lineHeight: 24, color: C.black }}>Answer 5 questions. Win coupons and products from nfil3d.com.</Text>
         </View>
-        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.mustard, alignItems: 'center', justifyContent: 'center' }}>
-          <Feather name="arrow-right" size={20} color={C.black} />
+        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.black, alignItems: 'center', justifyContent: 'center' }}>
+          <Feather name="arrow-right" size={20} color={C.mustard} />
         </View>
       </Pressable>
 

@@ -42,7 +42,7 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## NFIL3D project rules
 
-- Follow NFIL3D Brand Guidelines v1.2: tokens live in `src/lib/theme.ts`. Commerce orange (`#FF8A00`) is only for buy actions, with black text on it. The logo is never narrower than 120 px.
+- Colour theme: yellow (`#F7D347`) and white surfaces, always with black text. Tokens live in `src/lib/theme.ts`; buy actions are yellow buttons with black text. Type follows NFIL3D Brand Guidelines v1.2. The logo is never narrower than 120 px.
 - Product data comes from nfil3d.com (`src/lib/catalog.ts`, `functions/`). Never invent product specs, prices or features. Use exact SKU names.
 - Prices are always shown GST-inclusive with an "incl. GST" label.
 - Leave third-party character IP (Sonic, Disney, etc.) out of featured content.

@@ -1,14 +1,17 @@
-// NFIL3D Brand Guidelines v1.2 — colour and type tokens.
+// NFIL3D colour and type tokens (type per Brand Guidelines v1.2).
+// Colour theme: bold yellow and clean white surfaces, both with black text
+// (high-contrast style from the Everything3D card direction, Nov 2026).
+const YELLOW = '#F7D347';
 export const C = {
-  mustard: '#F5CB7B', // primary brand surfaces
-  black: '#000000', // text + logo on light
-  cream: '#FFF4DD', // panels, soft fills
-  orange: '#FF8A00', // commerce: buy buttons, retail accents (black text on top)
-  burnt: '#B34700', // decorative accents
-  sand: '#FFE8BB', // product panels
+  mustard: YELLOW, // primary brand surfaces (hero, welcome, quiz cards)
+  black: '#000000', // all text and the logo on yellow and white
+  cream: '#F4F4F4', // neutral panels on white
+  orange: YELLOW, // buy actions: yellow button, black text
+  burnt: '#000000', // accents are black in this theme
+  sand: '#FFF3C4', // soft yellow tint for status tags
   white: '#FFFFFF',
-  divider: '#EADBC3',
-  muted: '#5C5348', // warm grey for secondary text (7:1 on white)
+  divider: '#E6E6E6',
+  muted: '#5E5E62', // secondary text, 6:1 on white
   success: '#1E6B34',
   danger: '#B42318',
 };
