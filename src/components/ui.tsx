@@ -142,10 +142,32 @@ export function Row({ children, style }: { children: ReactNode; style?: StylePro
   return <View style={[{ flexDirection: 'row', alignItems: 'center' }, style]}>{children}</View>;
 }
 
-export function ListRow({ label, hint, onPress, icon, danger }: { label: string; hint?: string; onPress?: () => void; icon?: keyof typeof Feather.glyphMap; danger?: boolean }) {
+// Settings-style row. Pass `tint` for a coloured icon tile (iOS Settings look).
+export function ListRow({
+  label,
+  hint,
+  onPress,
+  icon,
+  danger,
+  tint,
+}: {
+  label: string;
+  hint?: string;
+  onPress?: () => void;
+  icon?: keyof typeof Feather.glyphMap;
+  danger?: boolean;
+  tint?: string;
+}) {
+  const darkOnTint = tint === C.mustard; // black glyph on yellow, white on every other colour
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [s.listRow, pressed && { opacity: 0.7 }]}>
-      {icon ? <Feather name={icon} size={20} color={danger ? C.danger : C.black} /> : null}
+      {icon && tint ? (
+        <View style={[s.tile, { backgroundColor: tint }]}>
+          <Feather name={icon} size={16} color={darkOnTint ? C.black : C.white} />
+        </View>
+      ) : icon ? (
+        <Feather name={icon} size={20} color={danger ? C.danger : C.black} />
+      ) : null}
       <Text style={[s.listLabel, danger && { color: C.danger }]}>{label}</Text>
       {hint ? <Text style={s.listHint}>{hint}</Text> : null}
       <Feather name="chevron-right" size={18} color={C.muted} />
@@ -171,6 +193,7 @@ export const s = StyleSheet.create({
   chip: { height: 34, paddingHorizontal: 14, borderRadius: 17, justifyContent: 'center' },
   chipText: { fontFamily: F.label, fontSize: 13 },
   listRow: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
+  tile: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
   listLabel: { flex: 1, fontFamily: F.body, fontSize: 15, color: C.black },
   listHint: { fontFamily: F.body, fontSize: 13, color: C.muted },
 });

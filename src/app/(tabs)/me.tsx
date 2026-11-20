@@ -7,7 +7,7 @@ import { Alert, Platform, Pressable, Text, View } from 'react-native';
 import { Group, IconButton, ListRow, Muted, Row, Screen } from '@/components/ui';
 import { NFIL_PRINTERS, useCatalog } from '@/lib/catalog';
 import { useStore } from '@/lib/store';
-import { C, F, R } from '@/lib/theme';
+import { C, F, R, TILE } from '@/lib/theme';
 
 export default function Me() {
   const products = useCatalog();
@@ -75,19 +75,19 @@ export default function Me() {
       </Pressable>
 
       <Group>
-        <ListRow icon="printer" label="My printer" hint={paired ? `${paired.name} paired${printQueue.length ? ` · ${printQueue.length} queued` : ''}` : 'Pair'} onPress={() => router.push('/devices')} />
-        <ListRow icon="disc" label="Filament library" onPress={() => router.push('/shop?tab=filaments')} />
-        <ListRow icon="book-open" label="Learning" onPress={() => router.push('/learn')} />
-        <ListRow icon="award" label="Weekly quiz" onPress={() => router.push('/quiz')} />
-        <ListRow icon="upload" label="My uploads" hint={uploads.length ? String(uploads.length) : undefined} onPress={() => router.push('/upload')} />
+        <ListRow icon="printer" tint={TILE.black} label="My printer" hint={paired ? `${paired.name} paired${printQueue.length ? ` · ${printQueue.length} queued` : ''}` : 'Pair'} onPress={() => router.push('/devices')} />
+        <ListRow icon="disc" tint={TILE.orange} label="Filament library" onPress={() => router.push('/shop?tab=filaments')} />
+        <ListRow icon="book-open" tint={TILE.blue} label="Learning" onPress={() => router.push('/learn')} />
+        <ListRow icon="award" tint={C.mustard} label="Weekly quiz" onPress={() => router.push('/quiz')} />
+        <ListRow icon="upload" tint={TILE.green} label="My uploads" hint={uploads.length ? String(uploads.length) : undefined} onPress={() => router.push('/upload')} />
       </Group>
 
       <Group>
-        <ListRow icon="map-pin" label="Addresses" onPress={() => open('/my-account/edit-address/')} />
-        <ListRow icon="help-circle" label="Support center" onPress={() => open('/contact/')} />
-        <ListRow icon="shield" label="Privacy policy" onPress={() => open('/privacy-policy/')} />
-        {user ? <ListRow icon="trash-2" label="Delete account" danger onPress={confirmDelete} /> : null}
-        {user ? <ListRow icon="log-out" label="Log out" onPress={signOut} /> : null}
+        <ListRow icon="map-pin" tint={TILE.blue} label="Addresses" onPress={() => open('/my-account/edit-address/')} />
+        <ListRow icon="help-circle" tint={TILE.teal} label="Support center" onPress={() => open('/contact/')} />
+        <ListRow icon="shield" tint={TILE.indigo} label="Privacy policy" onPress={() => open('/privacy-policy/')} />
+        {user ? <ListRow icon="trash-2" tint={TILE.red} label="Delete account" danger onPress={confirmDelete} /> : null}
+        {user ? <ListRow icon="log-out" tint={TILE.gray} label="Log out" onPress={signOut} /> : null}
       </Group>
       <Muted style={{ textAlign: 'center' }}>NFIL3D app · v1.1</Muted>
     </Screen>

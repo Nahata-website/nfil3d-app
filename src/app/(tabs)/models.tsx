@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Group, IconButton, ListRow, Muted, Row, Screen } from '@/components/ui';
 import { CAT, cleanModelName, Product, useCatalog } from '@/lib/catalog';
 import { useStore } from '@/lib/store';
-import { C, F, R } from '@/lib/theme';
+import { C, F, R, TILE } from '@/lib/theme';
 
 type Feed = { key: string; label: string; match?: RegExp };
 
@@ -100,8 +100,8 @@ export default function Models() {
           </View>
           <Text style={{ fontFamily: F.heading, fontSize: 17, marginTop: 4 }}>Explore more</Text>
           <Group>
-            <ListRow icon="box" label="3D models on nfil3d.com" onPress={() => WebBrowser.openBrowserAsync('https://nfil3d.com/product-category/3d-models/')} />
-            <ListRow icon="upload" label="Publish your model" onPress={() => router.push('/upload')} />
+            <ListRow icon="box" tint={TILE.orange} label="3D models on nfil3d.com" onPress={() => WebBrowser.openBrowserAsync('https://nfil3d.com/product-category/3d-models/')} />
+            <ListRow icon="upload" tint={TILE.green} label="Publish your model" onPress={() => router.push('/upload')} />
           </Group>
         </View>
       ) : (
@@ -215,8 +215,8 @@ function SideMenu({ visible, onClose, go }: { visible: boolean; onClose: () => v
               </Pressable>
             ))}
             <Group>
-              <ListRow icon="heart" label="Saved models" onPress={() => go('saved')} />
-              <ListRow icon="shopping-bag" label="NFIL3D Store" onPress={() => go('/shop')} />
+              <ListRow icon="heart" tint={TILE.pink} label="Saved models" onPress={() => go('saved')} />
+              <ListRow icon="shopping-bag" tint={C.mustard} label="NFIL3D Store" onPress={() => go('/shop')} />
             </Group>
           </ScrollView>
         </SafeAreaView>

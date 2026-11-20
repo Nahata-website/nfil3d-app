@@ -16,6 +16,9 @@ export const C = {
   danger: '#B42318',
 };
 
+// iOS system colours for settings-style icon tiles.
+export const TILE = { black: '#000000', blue: '#007AFF', green: '#34C759', red: '#FF3B30', pink: '#FF2D55', teal: '#30B0C7', indigo: '#5856D6', gray: '#8E8E93', orange: '#FF9500' };
+
 export const F = {
   display: 'InterTight_900Black',
   heading: 'Inter_700Bold',
