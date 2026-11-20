@@ -1,63 +1,129 @@
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import { useMemo, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { IconButton, Muted, Row, Screen } from '@/components/ui';
+import { Group, IconButton, ListRow, Muted, Row, Screen } from '@/components/ui';
 import { CAT, cleanModelName, Product, useCatalog } from '@/lib/catalog';
 import { useStore } from '@/lib/store';
 import { C, F, R } from '@/lib/theme';
 
-const TABS = [
+type Feed = { key: string; label: string; match?: RegExp };
+
+// Feeds first, then interest categories matched against the curated collection names.
+const FEEDS: Feed[] = [
   { key: 'foryou', label: 'For you' },
   { key: 'trending', label: 'Trending' },
   { key: 'saved', label: 'Saved' },
-] as const;
-type Tab = (typeof TABS)[number]['key'];
+];
+const INTERESTS: Feed[] = [
+  { key: 'rc', label: 'RC & vehicles', match: /rc |tank|construction|machinery/i },
+  { key: 'lowpoly', label: 'Low poly', match: /low poly/i },
+  { key: 'tests', label: 'Printer tests', match: /benchy/i },
+  { key: 'paper', label: 'Papercraft', match: /origami|papercraft/i },
+  { key: 'seasonal', label: 'Seasonal', match: /thanksgiving|christmas|diwali|halloween/i },
+  { key: 'household', label: 'Household', match: /household|organi[sz]er|holder|hook/i },
+  { key: 'toys', label: 'Toys & games', match: /toy|game|puzzle/i },
+  { key: 'tools', label: 'Tools', match: /tool|clip|bracket/i },
+];
+const ALL = [...FEEDS, ...INTERESTS];
 
 export default function Models() {
   const products = useCatalog();
   const { saved, toggleSaved, uploads } = useStore();
-  const [tab, setTab] = useState<Tab>('foryou');
+  const [feed, setFeed] = useState('foryou');
   const [q, setQ] = useState('');
+  const [interestsOpen, setInterestsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const current = ALL.find((f) => f.key === feed)!;
 
   const list = useMemo(() => {
     let l = products.filter((p) => p.categories.includes(CAT.models));
-    if (tab === 'trending') l = [...l].reverse();
-    if (tab === 'saved') l = l.filter((m) => saved.includes(m.id));
+    if (feed === 'trending') l = [...l].reverse();
+    if (feed === 'saved') l = l.filter((m) => saved.includes(m.id));
+    if (current.match) l = l.filter((m) => current.match!.test(m.name));
     const query = q.trim().toLowerCase();
     if (query) l = l.filter((m) => m.name.toLowerCase().includes(query));
     return l;
-  }, [products, tab, saved, q]);
+  }, [products, feed, saved, q, current]);
 
-  // Two-column masonry: alternate tall and short tiles.
   const cols: Product[][] = [[], []];
   list.forEach((m, i) => cols[i % 2].push(m));
 
+  // Top strip: the three feeds, plus the chosen interest when one is active.
+  const strip = current.match ? [FEEDS[0], FEEDS[1], current] : FEEDS;
+
+  const pick = (key: string) => {
+    setFeed(key);
+    setInterestsOpen(false);
+  };
+
   return (
     <Screen>
-      <Row style={{ gap: 10 }}>
+      <Row style={{ gap: 8 }}>
+        <IconButton icon="menu" label="Open menu" bg={C.white} onPress={() => setMenuOpen(true)} />
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, height: 42, paddingHorizontal: 14, borderRadius: 21, backgroundColor: C.cream }}>
           <Feather name="search" size={17} color={C.muted} />
           <TextInput value={q} onChangeText={setQ} placeholder="Search models" placeholderTextColor={C.muted} accessibilityLabel="Search models" style={{ flex: 1, fontFamily: F.body, fontSize: 15, height: 42 }} />
         </View>
-        <IconButton icon="plus" label="Upload a model" bg={C.mustard} onPress={() => router.push('/upload')} />
+        <IconButton icon="bell" label="Notifications" bg={C.white} />
       </Row>
 
-      <Row style={{ gap: 22, marginTop: -4 }}>
-        {TABS.map((t) => {
-          const on = t.key === tab;
-          return (
-            <Pressable key={t.key} accessibilityRole="tab" accessibilityState={{ selected: on }} onPress={() => setTab(t.key)} style={{ paddingVertical: 8, alignItems: 'center' }}>
-              <Text style={{ fontFamily: on ? F.heading : F.body, fontSize: 16, color: on ? C.black : C.muted }}>{t.label}</Text>
-              <View style={{ height: 3, width: 20, borderRadius: 2, marginTop: 6, backgroundColor: on ? C.mustard : 'transparent' }} />
+      {interestsOpen ? (
+        <View style={{ gap: 14 }}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Row style={{ gap: 8, alignItems: 'baseline' }}>
+              <Text style={{ fontFamily: F.heading, fontSize: 17 }}>My interests</Text>
+              <Muted>Tap to enter</Muted>
+            </Row>
+            <Pressable accessibilityRole="button" accessibilityLabel="Close interests" hitSlop={10} onPress={() => setInterestsOpen(false)}>
+              <Feather name="chevron-up" size={22} />
             </Pressable>
-          );
-        })}
-      </Row>
+          </Row>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {ALL.map((f) => {
+              const on = f.key === feed;
+              return (
+                <Pressable
+                  key={f.key}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  onPress={() => pick(f.key)}
+                  style={{ height: 36, paddingHorizontal: 14, borderRadius: 10, justifyContent: 'center', backgroundColor: on ? C.mustard : C.cream }}>
+                  <Text style={{ fontFamily: on ? F.label : F.body, fontSize: 14 }}>{f.label}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Text style={{ fontFamily: F.heading, fontSize: 17, marginTop: 4 }}>Explore more</Text>
+          <Group>
+            <ListRow icon="box" label="3D models on nfil3d.com" onPress={() => WebBrowser.openBrowserAsync('https://nfil3d.com/product-category/3d-models/')} />
+            <ListRow icon="upload" label="Publish your model" onPress={() => router.push('/upload')} />
+          </Group>
+        </View>
+      ) : (
+        <Row style={{ marginTop: -4 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 22, paddingRight: 12 }} style={{ flex: 1 }}>
+            {strip.map((t) => {
+              const on = t.key === feed;
+              return (
+                <Pressable key={t.key} accessibilityRole="tab" accessibilityState={{ selected: on }} onPress={() => setFeed(t.key)} style={{ paddingVertical: 8, alignItems: 'center' }}>
+                  <Text style={{ fontFamily: on ? F.heading : F.body, fontSize: 16, color: on ? C.black : C.muted }}>{t.label}</Text>
+                  <View style={{ height: 3, width: 20, borderRadius: 2, marginTop: 6, backgroundColor: on ? C.mustard : 'transparent' }} />
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+          <Pressable accessibilityRole="button" accessibilityLabel="Show all interests" hitSlop={10} onPress={() => setInterestsOpen(true)} style={{ paddingLeft: 8, paddingBottom: 8 }}>
+            <Feather name="chevron-down" size={22} />
+          </Pressable>
+        </Row>
+      )}
 
-      {uploads.length && tab === 'foryou' ? <Muted>{uploads.length} of your uploads are in review.</Muted> : null}
+      {uploads.length && feed === 'foryou' ? <Muted>{uploads.length} of your uploads are in review.</Muted> : null}
 
       {list.length ? (
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
@@ -92,9 +158,70 @@ export default function Models() {
           ))}
         </View>
       ) : (
-        <Muted style={{ textAlign: 'center', paddingVertical: 50 }}>{tab === 'saved' ? 'Tap the heart on a model to save it here.' : 'No models found.'}</Muted>
+        <View style={{ alignItems: 'center', gap: 12, paddingVertical: 50 }}>
+          <Muted style={{ textAlign: 'center' }}>{feed === 'saved' ? 'Tap the heart on a model to save it here.' : `No ${current.label.toLowerCase()} models yet. New collections are added every week.`}</Muted>
+          {feed !== 'foryou' ? (
+            <Pressable accessibilityRole="button" onPress={() => setFeed('foryou')} style={{ height: 36, paddingHorizontal: 16, borderRadius: 18, backgroundColor: C.mustard, justifyContent: 'center' }}>
+              <Text style={{ fontFamily: F.label, fontSize: 14 }}>Show all models</Text>
+            </Pressable>
+          ) : null}
+        </View>
       )}
-      <Muted style={{ textAlign: 'center' }}>Free collections curated by NFIL3D. Community uploads appear after review.</Muted>
+
+      <SideMenu
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        go={(path) => {
+          setMenuOpen(false);
+          if (path === 'saved') setFeed('saved');
+          else router.push(path as never);
+        }}
+      />
     </Screen>
+  );
+}
+
+const MENU: { title: string; sub: string; icon: keyof typeof Feather.glyphMap; path: string }[] = [
+  { title: 'Weekly quiz', sub: 'Score 5/5 to enter the prize draw', icon: 'award', path: '/quiz' },
+  { title: 'Learning', sub: 'Guides from setup to first print', icon: 'book-open', path: '/learn' },
+  { title: '3D pens for kids', sub: 'Pen kits, refills and stencils', icon: 'edit-3', path: '/shop?tab=pens' },
+  { title: 'Publish a model', sub: 'Share your designs with makers', icon: 'upload', path: '/upload' },
+  { title: 'My printer', sub: 'Pair a Mini-N, N1 or N2', icon: 'printer', path: '/devices' },
+];
+
+function SideMenu({ visible, onClose, go }: { visible: boolean; onClose: () => void; go: (path: string) => void }) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <SafeAreaView edges={['top', 'bottom']} style={{ width: '82%', maxWidth: 380, backgroundColor: C.white }}>
+          <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+            <Row style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+              <Text style={{ fontFamily: F.heading, fontSize: 20 }}>Explore</Text>
+              <IconButton icon="x" label="Close menu" onPress={onClose} />
+            </Row>
+            {MENU.map((m) => (
+              <Pressable
+                key={m.title}
+                accessibilityRole="link"
+                onPress={() => go(m.path)}
+                style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, padding: 16, borderRadius: R.lg, backgroundColor: C.cream, opacity: pressed ? 0.85 : 1 })}>
+                <View style={{ flex: 1, gap: 4 }}>
+                  <Text style={{ fontFamily: F.heading, fontSize: 16 }}>{m.title}</Text>
+                  <Text style={{ fontFamily: F.body, fontSize: 13, lineHeight: 18, color: C.muted }}>{m.sub}</Text>
+                </View>
+                <View style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: C.mustard, alignItems: 'center', justifyContent: 'center' }}>
+                  <Feather name={m.icon} size={24} />
+                </View>
+              </Pressable>
+            ))}
+            <Group>
+              <ListRow icon="heart" label="Saved models" onPress={() => go('saved')} />
+              <ListRow icon="shopping-bag" label="NFIL3D Store" onPress={() => go('/shop')} />
+            </Group>
+          </ScrollView>
+        </SafeAreaView>
+        <Pressable accessibilityRole="button" accessibilityLabel="Close menu" onPress={onClose} style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)' }} />
+      </View>
+    </Modal>
   );
 }
