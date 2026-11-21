@@ -19,11 +19,15 @@ import {
 } from 'firebase/auth';
 import { Platform } from 'react-native';
 
+// Firebase web config is public by design (it identifies the project; security comes from
+// Authorised domains and Auth rules). EXPO_PUBLIC_* variables override these defaults.
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBnUKyyHx--4u4evp7BzPM4afNHc8wIBnI',
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || 'nfil3d-7feb3.firebaseapp.com',
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'nfil3d-7feb3',
+  storageBucket: 'nfil3d-7feb3.firebasestorage.app',
+  messagingSenderId: '184311361939',
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:184311361939:web:3e9a787816fb6af8437866',
 };
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
 
